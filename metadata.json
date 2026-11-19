@@ -1,0 +1,8 @@
+{
+  "name": "Chatbot ADC - Hỗ Trợ Kỹ Thuật Thiết Bị Y Tế",
+  "description": "Chatbot ADC hỗ trợ kỹ thuật thiết bị y tế 24/7 dựa trên mô hình ngôn ngữ lớn và chuẩn SOP có khả năng truy xuất tài liệu hướng dẫn sửa chữa và cảnh báo lỗi nhanh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

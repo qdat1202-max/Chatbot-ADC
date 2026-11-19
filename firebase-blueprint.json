@@ -1,0 +1,403 @@
+{
+  "entities": {
+    "Engineer": {
+      "title": "Engineer",
+      "description": "Persisted ADC Medical Tech personnel profile including role, department, contact info, and RBAC tab permissions.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique personnel identifier.",
+          "minLength": 2,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the staff member.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "role": {
+          "type": "string",
+          "description": "Staff role within ADC Medical Tech.",
+          "enum": ["director", "css", "warehouse", "sales", "field_engineer"],
+          "maxLength": 32
+        },
+        "department": {
+          "type": "string",
+          "description": "Department label for the staff member.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact phone number.",
+          "minLength": 4,
+          "maxLength": 32
+        },
+        "email": {
+          "type": "string",
+          "description": "Work email address.",
+          "maxLength": 160
+        },
+        "status": {
+          "type": "string",
+          "description": "Current duty availability status.",
+          "enum": ["available", "on_site", "off_duty"],
+          "maxLength": 24
+        },
+        "activeTicketsCount": {
+          "type": "number",
+          "description": "Number of currently assigned active support tickets."
+        },
+        "area": {
+          "type": "string",
+          "description": "Assigned service territory or operational scope.",
+          "maxLength": 160
+        },
+        "specialties": {
+          "type": "array",
+          "description": "Bounded list of supported equipment models (max 10)."
+        },
+        "allowedTabs": {
+          "type": "array",
+          "description": "Bounded list of allowed admin portal tab identifiers (1 to 20)."
+        },
+        "username": {
+          "type": "string",
+          "description": "Optional staff login handle.",
+          "maxLength": 80
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the administrator who created/synced this personnel record.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the personnel record was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the personnel record was last updated."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role",
+        "department",
+        "phone",
+        "email",
+        "status",
+        "activeTicketsCount",
+        "area",
+        "specialties",
+        "allowedTabs",
+        "ownerUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SystemSettingConfig": {
+      "title": "SystemSettingConfig",
+      "description": "Persisted system settings including 24/7 duty engineer assignment and support hotline.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Settings document identifier.",
+          "minLength": 2,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "companyName": {
+          "type": "string",
+          "description": "Company display name.",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "supportHours": {
+          "type": "string",
+          "description": "Support operating hours text.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "dutyEngineerName": {
+          "type": "string",
+          "description": "Configured 24/7 duty engineer full name.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "dutyEngineerPhone": {
+          "type": "string",
+          "description": "Configured 24/7 duty engineer phone number.",
+          "minLength": 4,
+          "maxLength": 32
+        },
+        "hotline": {
+          "type": "string",
+          "description": "Primary technical hotline number.",
+          "maxLength": 32
+        },
+        "hotlineDisplay": {
+          "type": "string",
+          "description": "Formatted hotline string.",
+          "maxLength": 40
+        },
+        "zaloNumber": {
+          "type": "string",
+          "description": "Zalo support phone number.",
+          "maxLength": 32
+        },
+        "announcement": {
+          "type": "string",
+          "description": "Top banner announcement message.",
+          "maxLength": 500
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the administrator who owns the configuration.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when settings were created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when settings were updated."
+        }
+      },
+      "required": [
+        "id",
+        "companyName",
+        "supportHours",
+        "dutyEngineerName",
+        "dutyEngineerPhone",
+        "ownerUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SOPArticleRecord": {
+      "title": "SOPArticleRecord",
+      "description": "Long-term persisted Standard Operating Procedure (SOP) knowledge article for biomedical equipment troubleshooting.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique SOP article identifier.",
+          "minLength": 2,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "equipmentModel": {
+          "type": "string",
+          "description": "Target medical analyzer model.",
+          "enum": ["Zybio EXC200/220", "Zybio Z3 CRP", "Zybio Z50", "FS-205"],
+          "maxLength": 64
+        },
+        "category": {
+          "type": "string",
+          "description": "Technical subsystem category.",
+          "enum": [
+            "Cơ khí & Kim hút",
+            "Quang học & Cảm biến",
+            "Hóa chất & Buồng đếm",
+            "Điện tử & Nhiệt độ",
+            "Phần mềm & Kết nối"
+          ],
+          "maxLength": 64
+        },
+        "errorCode": {
+          "type": "string",
+          "description": "Optional manufacturer error code (e.g., E101, H101).",
+          "maxLength": 40
+        },
+        "title": {
+          "type": "string",
+          "description": "SOP procedure title.",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "symptom": {
+          "type": "string",
+          "description": "Observed symptom description.",
+          "maxLength": 2000
+        },
+        "rootCause": {
+          "type": "string",
+          "description": "Technical root cause explanation.",
+          "maxLength": 2000
+        },
+        "resolutionSteps": {
+          "type": "array",
+          "description": "Bounded ordered list of troubleshooting steps (max 40)."
+        },
+        "safetyWarnings": {
+          "type": "array",
+          "description": "Bounded list of biosafety and electrical warnings (max 20)."
+        },
+        "componentLocation": {
+          "type": "string",
+          "description": "Physical component location inside the analyzer.",
+          "maxLength": 240
+        },
+        "isCommon": {
+          "type": "boolean",
+          "description": "Whether the SOP covers a common frequent fault."
+        },
+        "sourceFile": {
+          "type": "string",
+          "description": "Source document filename (PDF, Excel, Word, etc.).",
+          "maxLength": 260
+        },
+        "pdfAttachment": {
+          "type": "object",
+          "description": "Metadata for the attached PDF document."
+        },
+        "updatedAtDate": {
+          "type": "string",
+          "description": "Display date string (YYYY-MM-DD).",
+          "maxLength": 32
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user who uploaded/synced this SOP.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the SOP was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the SOP was last updated."
+        }
+      },
+      "required": [
+        "id",
+        "equipmentModel",
+        "category",
+        "errorCode",
+        "title",
+        "symptom",
+        "rootCause",
+        "resolutionSteps",
+        "safetyWarnings",
+        "updatedAtDate",
+        "ownerUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SOPPdfChunk": {
+      "title": "SOPPdfChunk",
+      "description": "Base64 chunk of an uploaded SOP PDF attachment stored safely under the 1MB Firestore document limit.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Chunk document ID (<pdfId>__chunk_<index>).",
+          "minLength": 2,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "pdfId": {
+          "type": "string",
+          "description": "Parent SOP PDF attachment ID.",
+          "minLength": 2,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Original PDF file name.",
+          "minLength": 1,
+          "maxLength": 260
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "MIME type (application/pdf).",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "chunkIndex": {
+          "type": "number",
+          "description": "Zero-based chunk index (0 to 63)."
+        },
+        "totalChunks": {
+          "type": "number",
+          "description": "Total chunk count for this PDF (1 to 64)."
+        },
+        "dataBase64": {
+          "type": "string",
+          "description": "Base64 slice of the PDF payload (max 750,000 chars).",
+          "minLength": 1,
+          "maxLength": 750000
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user who uploaded the PDF.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when chunk was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when chunk was updated."
+        }
+      },
+      "required": [
+        "id",
+        "pdfId",
+        "fileName",
+        "mimeType",
+        "chunkIndex",
+        "totalChunks",
+        "dataBase64",
+        "ownerUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/engineers/{engineerId}": {
+      "schema": { "$ref": "#/entities/Engineer" },
+      "description": "Collection storing configured personnel profiles so staff settings persist across environments and publishing."
+    },
+    "/system_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/SystemSettingConfig" },
+      "description": "Collection storing configured duty engineer assignment and core system settings."
+    },
+    "/sop_articles/{sopId}": {
+      "schema": { "$ref": "#/entities/SOPArticleRecord" },
+      "description": "Long-term cloud SOP knowledge repository storing uploaded, analyzed, and curated technical procedures."
+    },
+    "/sop_pdf_chunks/{chunkId}": {
+      "schema": { "$ref": "#/entities/SOPPdfChunk" },
+      "description": "Chunked PDF attachments linked to SOP articles for long-term cross-device persistence."
+    }
+  }
+}

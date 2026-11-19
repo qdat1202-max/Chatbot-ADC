@@ -1,0 +1,202 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Hardened Global Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && request.auth.token.email == 'qdat1202@gmail.com';
+    }
+
+    // 3. Entity Validation Blueprints
+    function isValidEngineer(data, engineerId) {
+      return data.keys().hasAll([
+        'id', 'name', 'role', 'department', 'phone', 'email',
+        'status', 'activeTicketsCount', 'area', 'specialties',
+        'allowedTabs', 'ownerUid', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'name', 'role', 'department', 'phone', 'email',
+        'status', 'activeTicketsCount', 'area', 'specialties',
+        'allowedTabs', 'username', 'ownerUid', 'createdAt', 'updatedAt'
+      ]) &&
+      data.id is string &&
+      data.id == engineerId &&
+      isValidId(data.id) &&
+      data.id.size() >= 2 &&
+      data.name is string &&
+      data.name.size() >= 1 &&
+      data.name.size() <= 120 &&
+      data.role is string &&
+      data.role.size() <= 32 &&
+      data.role in ['director', 'css', 'warehouse', 'sales', 'field_engineer'] &&
+      data.department is string &&
+      data.department.size() >= 1 &&
+      data.department.size() <= 80 &&
+      data.phone is string &&
+      data.phone.size() >= 4 &&
+      data.phone.size() <= 32 &&
+      data.email is string &&
+      data.email.size() <= 160 &&
+      data.status is string &&
+      data.status.size() <= 24 &&
+      data.status in ['available', 'on_site', 'off_duty'] &&
+      (data.activeTicketsCount is int || data.activeTicketsCount is float) &&
+      data.activeTicketsCount >= 0 &&
+      data.activeTicketsCount <= 10000 &&
+      data.area is string &&
+      data.area.size() <= 160 &&
+      data.specialties is list &&
+      data.specialties.size() <= 10 &&
+      (data.specialties.size() == 0 || (data.specialties[0] is string && data.specialties[0].size() <= 64)) &&
+      data.allowedTabs is list &&
+      data.allowedTabs.size() >= 1 &&
+      data.allowedTabs.size() <= 20 &&
+      (data.allowedTabs[0] is string && data.allowedTabs[0].size() <= 32) &&
+      (!('username' in data) || (data.username is string && data.username.size() <= 80)) &&
+      data.ownerUid is string &&
+      isValidId(data.ownerUid) &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    function isValidSystemSetting(data, settingId) {
+      return data.keys().hasAll([
+        'id', 'companyName', 'supportHours', 'dutyEngineerName',
+        'dutyEngineerPhone', 'ownerUid', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'companyName', 'supportHours', 'dutyEngineerName',
+        'dutyEngineerPhone', 'hotline', 'hotlineDisplay', 'zaloNumber',
+        'announcement', 'ownerUid', 'createdAt', 'updatedAt'
+      ]) &&
+      data.id is string &&
+      data.id == settingId &&
+      isValidId(data.id) &&
+      data.id.size() >= 2 &&
+      data.companyName is string &&
+      data.companyName.size() >= 1 &&
+      data.companyName.size() <= 160 &&
+      data.supportHours is string &&
+      data.supportHours.size() >= 1 &&
+      data.supportHours.size() <= 120 &&
+      data.dutyEngineerName is string &&
+      data.dutyEngineerName.size() >= 1 &&
+      data.dutyEngineerName.size() <= 120 &&
+      data.dutyEngineerPhone is string &&
+      data.dutyEngineerPhone.size() >= 4 &&
+      data.dutyEngineerPhone.size() <= 32 &&
+      (!('hotline' in data) || (data.hotline is string && data.hotline.size() <= 32)) &&
+      (!('hotlineDisplay' in data) || (data.hotlineDisplay is string && data.hotlineDisplay.size() <= 40)) &&
+      (!('zaloNumber' in data) || (data.zaloNumber is string && data.zaloNumber.size() <= 32)) &&
+      (!('announcement' in data) || (data.announcement is string && data.announcement.size() <= 500)) &&
+      data.ownerUid is string &&
+      isValidId(data.ownerUid) &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 4. Persisted Personnel Collection (PII-isolated to verified admin or document owner)
+    match /engineers/{engineerId} {
+      allow get: if isVerifiedUser() && isValidId(engineerId) && (
+        isAdmin() || existing().ownerUid == request.auth.uid
+      );
+
+      allow list: if isVerifiedUser() && (
+        isAdmin() || resource.data.ownerUid == request.auth.uid
+      );
+
+      allow create: if isVerifiedUser() &&
+        isValidId(engineerId) &&
+        isValidEngineer(incoming(), engineerId) &&
+        incoming().ownerUid == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        (
+          isAdmin() ||
+          (
+            incoming().role == 'field_engineer' &&
+            incoming().allowedTabs.hasOnly(['dispatch', 'create_ticket', 'bulletins', 'sop_mgmt', 'records', 'learning'])
+          )
+        );
+
+      allow update: if isVerifiedUser() &&
+        isValidId(engineerId) &&
+        isValidEngineer(incoming(), engineerId) &&
+        incoming().ownerUid == existing().ownerUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'name', 'role', 'department', 'phone', 'email', 'status',
+            'activeTicketsCount', 'area', 'specialties', 'allowedTabs',
+            'username', 'updatedAt'
+          ])) ||
+          (existing().ownerUid == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly([
+            'status', 'activeTicketsCount', 'updatedAt'
+          ]))
+        );
+
+      allow delete: if isVerifiedUser() && isValidId(engineerId) && (
+        isAdmin() || existing().ownerUid == request.auth.uid
+      );
+    }
+
+    // 5. Persisted System Settings Collection (Duty engineer & core support config)
+    match /system_settings/{settingId} {
+      allow get: if isVerifiedUser() && isValidId(settingId) && (
+        isAdmin() || existing().ownerUid == request.auth.uid
+      );
+
+      allow list: if isVerifiedUser() && (
+        isAdmin() || resource.data.ownerUid == request.auth.uid
+      );
+
+      allow create: if isVerifiedUser() &&
+        isValidId(settingId) &&
+        isValidSystemSetting(incoming(), settingId) &&
+        incoming().ownerUid == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+
+      allow update: if isVerifiedUser() &&
+        isValidId(settingId) &&
+        isValidSystemSetting(incoming(), settingId) &&
+        incoming().ownerUid == existing().ownerUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'companyName', 'supportHours', 'dutyEngineerName', 'dutyEngineerPhone',
+          'hotline', 'hotlineDisplay', 'zaloNumber', 'announcement', 'updatedAt'
+        ]);
+
+      allow delete: if isVerifiedUser() && isValidId(settingId) && isAdmin();
+    }
+  }
+}

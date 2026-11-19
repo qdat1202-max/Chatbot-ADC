@@ -1,0 +1,11 @@
+﻿STT,Mã Nhân Sự,Họ và Tên,Chức Vụ / Vai Trò,Phòng Ban,Số Điện Thoại,Email Liên Hệ,Tên Đăng Nhập,Trạng Thái Trực,Số Ca Đang Phụ Trách,Khu Vực Phụ Trách,Dòng Thiết Bị Chuyên Trách
+1,ENG-DIR-001,Lê Thanh Tùng,Giám đốc,Ban Giám Đốc,0868 595 700,tung@adctbyt.vn,tung,Sẵn sàng trực (Đang rảnh),0,Ban Giám Đốc ADC (Toàn quốc),"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+2,ENG-SALES-001,Phạm Đức Trung,Kinh doanh,Phòng Kinh Doanh,0984 873 237,trung@adctbyt.vn,trung,Sẵn sàng trực (Đang rảnh),0,Khối Kinh Doanh & Bán Hàng Thiết Bị,"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+3,ENG-SALES-002,Nguyễn Đình Chiểu,Kinh doanh,Phòng Kinh Doanh,0984 873 237,chieu@adctbyt.vn,chieu,Sẵn sàng trực (Đang rảnh),0,Khối Kinh Doanh & Bán Hàng Thiết Bị,"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+4,ENG-SALES-003,Nguyễn Trọng Mai,Kinh doanh,Phòng Kinh Doanh,0984 873 237,mai@adctbyt.vn,mai,Sẵn sàng trực (Đang rảnh),0,Khối Kinh Doanh & Bán Hàng Thiết Bị,"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+5,ENG-SALES-004,Vũ Tất Đạt,Kinh doanh,Phòng Kinh Doanh,0984 873 237,dat.vt@adctbyt.vn,dat.vt,Sẵn sàng trực (Đang rảnh),0,Khối Kinh Doanh & Bán Hàng Thiết Bị,"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+6,ENG-CSS-001,Kim Anh,Phòng CSS,Phòng CSS,0868 595 709,kimanh@adctbyt.vn,kimanh,Sẵn sàng trực (Đang rảnh),1,Trung Tâm Dịch Vụ Khách Hàng (CSS),"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+7,ENG-WH-001,Vũ Văn Hoan,Kho vận,Bộ Phận Kho,0868 595 725,hoan@adctbyt.vn,hoan,Sẵn sàng trực (Đang rảnh),0,Kho Tổng Thiết Bị & Linh Kiện ADC,"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+8,ENG-002,Nguyễn Quang Đạt,Kỹ thuật,Phòng Kỹ Thuật,0968 220 800,dat.nq@adctbyt.vn,dat.nq,Đang xử lý tại viện,2,Hà Nội & Khu vực phía Bắc,"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+9,ENG-SALES-006,Vũ Thị Mai Lan,Kinh doanh,Phòng CSS,0966 888 999,lan@adctbyt.vn,trang.lt,Sẵn sàng trực (Đang rảnh),0,Phòng CSS & Tiếp Nhận,"Zybio EXC200/220, Zybio Z3 CRP, Zybio Z50, FS-205"
+10,ENG-SALES-005,Trương Thị Hồng Tuyết,Kinh doanh,Phòng CSS,0966 888 999,tuyet@adctbyt.vn,trang.lt,Sẵn sàng trực (Đang rảnh),0,Phòng CSS & Tiếp Nhận,
